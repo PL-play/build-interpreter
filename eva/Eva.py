@@ -35,7 +35,7 @@ class Eva:
         # variables
         if exp[0] == 'var':
             _, name, value = exp
-            return env.define(name, value)
+            return env.define(name, self.eval(value))
 
         if self.is_varname(exp):
             return env.lookup(exp)

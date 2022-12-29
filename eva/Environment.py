@@ -9,7 +9,6 @@ class Environment:
         return value
 
     def lookup(self, name):
-        value = self._record.get(name)
-        if not value:
+        if not self._record.__contains__(name):
             raise ReferenceError(f'Variable {name} is not defined')
-        return value
+        return self._record[name]
