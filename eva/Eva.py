@@ -21,28 +21,29 @@ class Eva:
         # math
 
         if exp[0] == '+':
-            return self.eval(exp[1]) + self.eval(exp[2])
+            return self.eval(exp[1], env) + self.eval(exp[2], env)
 
         if exp[0] == '-':
-            return self.eval(exp[1]) - self.eval(exp[2])
+            return self.eval(exp[1], env) - self.eval(exp[2], env)
 
         if exp[0] == '*':
-            return self.eval(exp[1]) * self.eval(exp[2])
+            return self.eval(exp[1], env) * self.eval(exp[2], env)
 
         if exp[0] == '/':
-            return self.eval(exp[1]) / self.eval(exp[2])
+            return self.eval(exp[1], env) / self.eval(exp[2], env)
 
         # variables
         if exp[0] == 'var':
             _, name, value = exp
-            return env.define(name, self.eval(value))
+            return env.define(name, self.eval(value, env))
 
         if self.is_varname(exp):
             return env.lookup(exp)
 
         # blocks
         if exp[0] == 'begin':
-            return self._eval_block(exp, env)
+            block_env = Environment({}, env)
+            return self._eval_block(exp, block_env)
 
         raise NotImplementedError(f'{exp} not implemented!')
 
