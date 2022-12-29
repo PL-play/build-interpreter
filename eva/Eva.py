@@ -40,6 +40,10 @@ class Eva:
         if self.is_varname(exp):
             return env.lookup(exp)
 
+        # blocks
+        if exp[0] == 'begin':
+            return self._eval_block(exp, env)
+
         raise NotImplementedError(f'{exp} not implemented!')
 
     def is_number(self, exp):
@@ -50,3 +54,6 @@ class Eva:
 
     def is_varname(self, exp):
         return type(exp) == str and re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', exp)
+
+    def _eval_block(self, exp, env):
+        return [self.eval(e, env) for e in exp[1:]][-1]

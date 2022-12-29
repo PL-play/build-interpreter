@@ -66,6 +66,13 @@ class EvaTest(unittest.TestCase):
         self.assertEqual(eva.eval(('var', 'x', ('*', 2, 3))), 6)
         self.assertEqual(eva.eval('x'), 6)
 
+    def test14(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(['begin',
+                                   ['var', 'x', 10],
+                                   ['var', 'y', 20],
+                                   ['+', 20, ['*', 'x', 'y']]]), 220)
+
 
 if __name__ == "__main__":
     suite = unittest.TestSuite()
