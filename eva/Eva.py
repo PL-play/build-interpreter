@@ -32,10 +32,15 @@ class Eva:
         if exp[0] == '/':
             return self.eval(exp[1], env) / self.eval(exp[2], env)
 
-        # variables
+        # variables declaration : (var foo 1)
         if exp[0] == 'var':
             _, name, value = exp
             return env.define(name, self.eval(value, env))
+
+        # variables update : (set foo 10)
+        if exp[0] == 'set':
+            _, name, value = exp
+            return env.assign(name, value)
 
         if self.is_varname(exp):
             return env.lookup(exp)

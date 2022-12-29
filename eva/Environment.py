@@ -9,6 +9,10 @@ class Environment:
         self._record[name] = value
         return value
 
+    def assign(self, name, value):
+        self.resolve(name)._record[name] = value
+        return value
+
     def lookup(self, name):
         return self.resolve(name)._record[name]
 
