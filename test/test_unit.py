@@ -25,6 +25,22 @@ class EvaTest(unittest.TestCase):
         eva = Eva()
         self.assertEqual(eva.eval(('+', 3, ('+', 4, 6))), 13)
 
+    def test6(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(('-', 3, 3)), 0)
+
+    def test7(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(('-', 3, ('-', 6, 2))), -1)
+
+    def test8(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(('*', 2, 2)), 4)
+
+    def test9(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(('/', 6, 2)), 3)
+
 
 if __name__ == "__main__":
     suite = unittest.TestSuite()

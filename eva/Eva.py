@@ -15,6 +15,15 @@ class Eva:
         if exp[0] == '+':
             return self.eval(exp[1]) + self.eval(exp[2])
 
+        if exp[0] == '-':
+            return self.eval(exp[1]) - self.eval(exp[2])
+
+        if exp[0] == '*':
+            return self.eval(exp[1]) * self.eval(exp[2])
+
+        if exp[0] == '/':
+            return self.eval(exp[1]) / self.eval(exp[2])
+
         raise NotImplementedError(f'{exp} not implemented!')
 
     def is_number(self, exp):
