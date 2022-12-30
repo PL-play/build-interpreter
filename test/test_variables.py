@@ -29,3 +29,9 @@ class EvaTest(unittest.TestCase):
         eva = Eva()
         self.assertEqual(eva.eval(('var', 'x', ('*', 2, 3))), 6)
         self.assertEqual(eva.eval('x'), 6)
+
+    def test14(self):
+        eva = Eva()
+        eva.eval(('var', 'x', 0))
+        self.assertEqual(eva.eval(('set', 'x', ('*', 2, 3))), 6)
+        self.assertEqual(eva.eval('x'), 6)
