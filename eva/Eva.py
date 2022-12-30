@@ -17,6 +17,10 @@ class Eva:
 
         if self.is_string(exp):
             return exp[1:-1]
+
+        if self.is_varname(exp):
+            return env.lookup(exp)
+
         # comparison
         if exp[0] == '>':
             return self.eval(exp[1], env) > self.eval(exp[2], env)
@@ -37,6 +41,13 @@ class Eva:
         if exp[0] == 'if':
             _, condition, consequent, alternate = exp
             return self.eval(consequent, env) if self.eval(condition, env) else self.eval(alternate, env)
+        # while
+        if exp[0] == 'while':
+            _, condition, body = exp
+            result = None
+            while self.eval(condition, env):
+                result = self.eval(body, env)
+            return result
 
         # math
         if exp[0] == '+':
@@ -59,10 +70,7 @@ class Eva:
         # variables update : (set foo 10)
         if exp[0] == 'set':
             _, name, value = exp
-            return env.assign(name, value)
-
-        if self.is_varname(exp):
-            return env.lookup(exp)
+            return env.assign(name, self.eval(value, env))
 
         # blocks
         if exp[0] == 'begin':
@@ -81,4 +89,8 @@ class Eva:
         return type(exp) == str and re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', exp)
 
     def _eval_block(self, exp, env):
-        return [self.eval(e, env) for e in exp[1:]][-1]
+        expressions = exp[1:]
+        result = None
+        for e in expressions:
+            result = self.eval(e, env)
+        return result
