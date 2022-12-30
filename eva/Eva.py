@@ -17,9 +17,28 @@ class Eva:
 
         if self.is_string(exp):
             return exp[1:-1]
+        # comparison
+        if exp[0] == '>':
+            return self.eval(exp[1], env) > self.eval(exp[2], env)
+
+        if exp[0] == '>=':
+            return self.eval(exp[1], env) >= self.eval(exp[2], env)
+
+        if exp[0] == '<':
+            return self.eval(exp[1], env) < self.eval(exp[2], env)
+
+        if exp[0] == '<=':
+            return self.eval(exp[1], env) <= self.eval(exp[2], env)
+
+        if exp[0] == '==':
+            return self.eval(exp[1], env) == self.eval(exp[2], env)
+
+        # if condition
+        if exp[0] == 'if':
+            _, condition, consequent, alternate = exp
+            return self.eval(consequent, env) if self.eval(condition, env) else self.eval(alternate, env)
 
         # math
-
         if exp[0] == '+':
             return self.eval(exp[1], env) + self.eval(exp[2], env)
 
