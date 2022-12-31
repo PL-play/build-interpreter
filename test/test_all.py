@@ -1,6 +1,6 @@
 import unittest
 
-from test import test_block, test_math, test_self_eval, test_variables, test_while, test_if_condition
+from test import test_block, test_math, test_self_eval, test_variables, test_while, test_if_condition, test_parser
 
 if __name__ == '__main__':
     suite = unittest.TestSuite()
@@ -10,6 +10,7 @@ if __name__ == '__main__':
     suite.addTest(unittest.makeSuite(test_variables.EvaTest))
     suite.addTest(unittest.makeSuite(test_while.EvaTest))
     suite.addTest(unittest.makeSuite(test_if_condition.EvaTest))
+    suite.addTest(unittest.makeSuite(test_parser.EvaTest))
 
     runner = unittest.TextTestRunner()
     runner.run(suite)
