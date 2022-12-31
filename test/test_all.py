@@ -1,0 +1,15 @@
+import unittest
+
+from test import test_block, test_math, test_self_eval, test_variables, test_while, test_if_condition
+
+if __name__ == '__main__':
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(test_block.EvaTest))
+    suite.addTest(unittest.makeSuite(test_math.EvaTest))
+    suite.addTest(unittest.makeSuite(test_self_eval.EvaTest))
+    suite.addTest(unittest.makeSuite(test_variables.EvaTest))
+    suite.addTest(unittest.makeSuite(test_while.EvaTest))
+    suite.addTest(unittest.makeSuite(test_if_condition.EvaTest))
+
+    runner = unittest.TextTestRunner()
+    runner.run(suite)
