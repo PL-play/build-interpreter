@@ -22,3 +22,50 @@ class Environment:
         if self._parent is None:
             raise ReferenceError(f'Variable {name} is not defined')
         return self._parent.resolve(name)
+
+    @staticmethod
+    def global_env():
+        def plus(op1, op2):
+            return op1 + op2
+
+        def minus(op1, op2):
+            if op2 is None:
+                return -op1
+            return op1 - op2
+
+        def multiply(op1, op2):
+            return op1 * op2
+
+        def divide(op1, op2):
+            return op1 / op2
+
+        def gt(op1, op2):
+            return op1 > op2
+
+        def ge(op1, op2):
+            return op1 >= op2
+
+        def lt(op1, op2):
+            return op1 < op2
+
+        def le(op1, op2):
+            return op1 <= op2
+
+        def eq(op1, op2):
+            return op1 == op2
+
+        return Environment({
+            'true': True,
+            'false': False,
+            'null': None,
+            '+': plus,
+            '-': minus,
+            '*': multiply,
+            '/': divide,
+            '>': gt,
+            '>=': ge,
+            '<': lt,
+            '<=': le,
+            '==': eq
+
+        })

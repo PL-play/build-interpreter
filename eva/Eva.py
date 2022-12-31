@@ -1,11 +1,13 @@
+import collections
 import numbers
 import re
+import types
 
 from eva.Environment import Environment
 
 
 class Eva:
-    def __init__(self, global_env=Environment()):
+    def __init__(self, global_env=Environment.global_env()):
         self.global_env = global_env
 
     def eval(self, exp, env=None):
@@ -21,22 +23,6 @@ class Eva:
         if self.is_varname(exp):
             return env.lookup(exp)
 
-        # comparison
-        if exp[0] == '>':
-            return self.eval(exp[1], env) > self.eval(exp[2], env)
-
-        if exp[0] == '>=':
-            return self.eval(exp[1], env) >= self.eval(exp[2], env)
-
-        if exp[0] == '<':
-            return self.eval(exp[1], env) < self.eval(exp[2], env)
-
-        if exp[0] == '<=':
-            return self.eval(exp[1], env) <= self.eval(exp[2], env)
-
-        if exp[0] == '==':
-            return self.eval(exp[1], env) == self.eval(exp[2], env)
-
         # if condition
         if exp[0] == 'if':
             _, condition, consequent, alternate = exp
@@ -48,19 +34,6 @@ class Eva:
             while self.eval(condition, env):
                 result = self.eval(body, env)
             return result
-
-        # math
-        if exp[0] == '+':
-            return self.eval(exp[1], env) + self.eval(exp[2], env)
-
-        if exp[0] == '-':
-            return self.eval(exp[1], env) - self.eval(exp[2], env)
-
-        if exp[0] == '*':
-            return self.eval(exp[1], env) * self.eval(exp[2], env)
-
-        if exp[0] == '/':
-            return self.eval(exp[1], env) / self.eval(exp[2], env)
 
         # variables declaration : (var foo 1)
         if exp[0] == 'var':
@@ -77,6 +50,17 @@ class Eva:
             block_env = Environment({}, env)
             return self._eval_block(exp, block_env)
 
+        # function
+        if isinstance(exp, list) or isinstance(exp, tuple):
+            fn = self.eval(exp[0], env)
+            args = [self.eval(e, env) for e in exp[1:]]
+            # build-in functions
+            if isinstance(fn, types.FunctionType) or \
+                    isinstance(fn, types.BuiltinFunctionType) or \
+                    isinstance(fn, types.MethodType):
+                return fn(*args)
+            # user defined functions
+
         raise NotImplementedError(f'{exp} not implemented!')
 
     def is_number(self, exp):
@@ -86,7 +70,7 @@ class Eva:
         return type(exp) == str and exp[0] == '"' and exp[-1] == '"'
 
     def is_varname(self, exp):
-        return type(exp) == str and re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', exp)
+        return type(exp) == str and re.match(r'^[+\-*/><=a-zA-Z_][a-zA-Z0-9_]*$', exp)
 
     def _eval_block(self, exp, env):
         expressions = exp[1:]
