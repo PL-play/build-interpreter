@@ -11,6 +11,7 @@ class Eva:
         self.global_env = global_env
 
     def eval(self, exp, env=None):
+        print(f'start eval {exp}')
         if not env:
             env = self.global_env
 
@@ -50,16 +51,40 @@ class Eva:
             block_env = Environment({}, env)
             return self._eval_block(exp, block_env)
 
-        # function
+        # def
+        if exp[0] == 'def':
+            _, name, params, body = exp
+            fn = {
+                'params': params,
+                'body': body,
+                'env': env  # closure
+            }
+            return env.define(name, fn)
+
+        # function call
         if isinstance(exp, list) or isinstance(exp, tuple):
+            print(f'-- function call {exp}')
             fn = self.eval(exp[0], env)
             args = [self.eval(e, env) for e in exp[1:]]
             # build-in functions
             if isinstance(fn, types.FunctionType) or \
                     isinstance(fn, types.BuiltinFunctionType) or \
                     isinstance(fn, types.MethodType):
-                return fn(*args)
-            # user defined functions
+                value = fn(*args)
+                print(f'--- call built-in function {fn} ({args}), result {value}')
+                return value
+            else:
+                # user defined functions
+                # function call in a new environment
+                # 1. install past arguments to the parameters
+                print(f'--- call user defined function  {exp[0]} ({args})')
+                activation_record = {}
+                for index, item in enumerate(fn.get('params')):
+                    activation_record[item] = args[index]
+                activation_env = Environment(activation_record,
+                                             fn.get('env')  # static scope. dynamic scope if set to 'env'
+                                             )
+                return self._eval_body(fn.get('body'), activation_env)
 
         raise NotImplementedError(f'{exp} not implemented!')
 
@@ -70,7 +95,7 @@ class Eva:
         return type(exp) == str and exp[0] == '"' and exp[-1] == '"'
 
     def is_varname(self, exp):
-        return type(exp) == str and re.match(r'^[+\-*/><=a-zA-Z_][a-zA-Z0-9_]*$', exp)
+        return type(exp) == str and re.match(r'^[+\-*/><=a-zA-Z0-9_]+$', exp)
 
     def _eval_block(self, exp, env):
         expressions = exp[1:]
@@ -78,3 +103,8 @@ class Eva:
         for e in expressions:
             result = self.eval(e, env)
         return result
+
+    def _eval_body(self, body, env):
+        if body[0] == 'begin':
+            return self._eval_block(body, env)
+        return self.eval(body, env)
