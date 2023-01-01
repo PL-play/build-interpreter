@@ -1,4 +1,3 @@
-import collections
 import numbers
 import re
 import types
