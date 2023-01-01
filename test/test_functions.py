@@ -6,10 +6,6 @@ from util.Parser import parse
 
 class EvaTest(unittest.TestCase):
     """
-    (if <condition>
-        <consequent>
-        <alternate>
-    )
     """
 
     def test1(self):
@@ -21,3 +17,48 @@ class EvaTest(unittest.TestCase):
                 (square 2)
             )
         ''')), 4)
+
+    def test2(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(parse('''
+                    (begin 
+                        (def calc (x y)
+                            (begin 
+                                (var z 30)
+                                (+ (* x y) z)
+                            ))
+                        (calc 10 20)
+                    )
+                ''')), 230)
+
+    def test3(self):
+        """
+        var value = 100
+        def calc(x,y){
+            var z = x + y
+            def inner(foo){
+                return foo + z + value
+            }
+            return inner
+        }
+        var fn = calc(10,20)
+        return fn(30)
+
+        :return:
+        """
+        eva = Eva()
+        self.assertEqual(eva.eval(parse('''
+                    (begin 
+                      (var value 100)
+                      (def calc (x y)
+                        (begin
+                          (var z (+ x y))
+                          
+                          (def inner (foo)
+                            (+ (+ foo z) value))
+                          inner    
+                      ))
+                      (var fn (calc 10 20))  
+                      (fn 30)
+                    )
+                ''')), 160)
