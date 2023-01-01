@@ -50,7 +50,7 @@ class Eva:
             block_env = Environment({}, env)
             return self._eval_block(exp, block_env)
 
-        # def
+        # function declaration: (def foo (x) (* x x))
         if exp[0] == 'def':
             _, name, params, body = exp
             fn = {
@@ -59,6 +59,15 @@ class Eva:
                 'env': env  # closure
             }
             return env.define(name, fn)
+
+        # lambda function declaration: (lambda (x) (* x x))
+        if exp[0] == 'lambda':
+            _, params, body = exp
+            return {
+                'params': params,
+                'body': body,
+                'env': env  # closure
+            }
 
         # function call
         if isinstance(exp, list) or isinstance(exp, tuple):
