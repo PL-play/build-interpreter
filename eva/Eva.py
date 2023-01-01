@@ -51,14 +51,21 @@ class Eva:
             return self._eval_block(exp, block_env)
 
         # function declaration: (def foo (x) (* x x))
-        if exp[0] == 'def':
-            _, name, params, body = exp
+        """
+        _, name, params, body = exp
             fn = {
                 'params': params,
                 'body': body,
                 'env': env  # closure
             }
             return env.define(name, fn)
+        """
+        # Syntactic sugar for: (var foo (lambda (x) (* x x)))
+        if exp[0] == 'def':
+            _, name, params, body = exp
+            # JIT-transpile to a variable declaration
+            var_expression = ['var', name, ['lambda', params, body]]
+            return self.eval(var_expression, env)
 
         # lambda function declaration: (lambda (x) (* x x))
         if exp[0] == 'lambda':
