@@ -62,3 +62,20 @@ class EvaTest(unittest.TestCase):
                       (fn 30)
                     )
                 ''')), 160)
+
+    def test4(self):
+        """
+        Recursive function
+        """
+        eva = Eva()
+        self.assertEqual(eva.eval(parse('''
+                           (begin 
+                             (def factorial (x)
+                               (if (== x 1)
+                                 1
+                                (* x (factorial (- x 1)))
+                             ))
+                             
+                             (factorial 5)
+                           )
+                       ''')), 120)
