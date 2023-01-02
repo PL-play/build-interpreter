@@ -3,11 +3,13 @@ import re
 import types
 
 from eva.Environment import Environment
+from eva.Transformer import Transformer
 
 
 class Eva:
     def __init__(self, global_env=Environment.global_env()):
         self.global_env = global_env
+        self._transformer = Transformer()
 
     def eval(self, exp, env=None):
         print(f'start eval {exp}')
@@ -64,7 +66,7 @@ class Eva:
         if exp[0] == 'def':
             _, name, params, body = exp
             # JIT-transpile to a variable declaration
-            var_expression = ['var', name, ['lambda', params, body]]
+            var_expression = self._transformer.trans_def_to_var_lambda(exp)
             return self.eval(var_expression, env)
 
         # lambda function declaration: (lambda (x) (* x x))
