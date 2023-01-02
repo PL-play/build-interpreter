@@ -25,10 +25,14 @@ class Eva:
         if self.is_varname(exp):
             return env.lookup(exp)
 
-        # if condition
+        # if condition (if <condition> <consequent> <alternate>)
         if exp[0] == 'if':
             _, condition, consequent, alternate = exp
             return self.eval(consequent, env) if self.eval(condition, env) else self.eval(alternate, env)
+
+        if exp[0] == 'switch':
+            if_expression = self._transformer.trans_switch_to_if(exp)
+            return self.eval(if_expression, env)
         # while
         if exp[0] == 'while':
             _, condition, body = exp
