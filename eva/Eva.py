@@ -52,8 +52,12 @@ class Eva:
 
         # variables update : (set foo 10)
         if exp[0] == 'set':
-            _, name, value = exp
-            return env.assign(name, self.eval(value, env))
+            _, ref, value = exp
+            if not isinstance(ref, str) and ref[0] == 'prop':
+                _, instance_name, prop_name = ref
+                instance_env = self.eval(instance_name, env)
+                return instance_env.define(prop_name, self.eval(value, env))
+            return env.assign(ref, self.eval(value, env))
 
         # blocks
         if exp[0] == 'begin':
@@ -85,6 +89,32 @@ class Eva:
                 'body': body,
                 'env': env  # closure
             }
+        # Class declaration:(class <name> <parent> <body>)
+        # A Class is an environment!!! -- a storage of methods and shared properties
+        if exp[0] == 'class':
+            _, name, parent, body = exp
+            parent_env = self.eval(parent, env)
+            parent_env = parent_env if parent_env else env
+            class_env = Environment({}, parent_env)
+            self._eval_body(body, class_env)
+            return env.define(name, class_env)
+
+        # Class instantiation: (new <class> <arguments>)
+        # An instance of a Class is an environment!!!
+        # its parent component of the instance environment is set to its class.
+        if exp[0] == 'new':
+            class_env = self.eval(exp[1], env)
+            args = [self.eval(a, env) for a in exp[2:]]
+            instance_env = Environment({}, class_env)
+            # the first argument is 'this'
+            self._user_defined_function(class_env.lookup('constructor'), [instance_env, *args])
+            return instance_env
+
+        # property access:(prop <instance> <name>)
+        if exp[0] == 'prop':
+            _, instance, name = exp
+            instance_env = self.eval(instance, env)
+            return instance_env.lookup(name)
 
         if exp[0] == '++':
             pp_exp = self._transformer.trans_pp(exp)
@@ -119,15 +149,18 @@ class Eva:
                 # function call in a new environment
                 # 1. install past arguments to the parameters
                 print(f'--- call user defined function  {exp[0]} ({args})')
-                activation_record = {}
-                for index, item in enumerate(fn.get('params')):
-                    activation_record[item] = args[index]
-                activation_env = Environment(activation_record,
-                                             fn.get('env')  # static scope. dynamic scope if set to 'env'
-                                             )
-                return self._eval_body(fn.get('body'), activation_env)
+                return self._user_defined_function(fn, args)
 
         raise NotImplementedError(f'{exp} not implemented!')
+
+    def _user_defined_function(self, fn, args):
+        activation_record = {}
+        for index, item in enumerate(fn.get('params')):
+            activation_record[item] = args[index]
+        activation_env = Environment(activation_record,
+                                     fn.get('env')  # static scope. dynamic scope if set to 'env'
+                                     )
+        return self._eval_body(fn.get('body'), activation_env)
 
     def is_number(self, exp):
         return isinstance(exp, numbers.Number)
