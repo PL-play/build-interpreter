@@ -86,6 +86,22 @@ class Eva:
                 'env': env  # closure
             }
 
+        if exp[0] == '++':
+            pp_exp = self._transformer.trans_pp(exp)
+            return self.eval(pp_exp, env)
+
+        if exp[0] == '--':
+            mm_exp = self._transformer.trans_mm(exp)
+            return self.eval(mm_exp, env)
+
+        if exp[0] == '+=':
+            pe_exp = self._transformer.trans_pe(exp)
+            return self.eval(pe_exp, env)
+
+        if exp[0] == '-=':
+            me_exp = self._transformer.trans_me(exp)
+            return self.eval(me_exp, env)
+
         # function call
         if isinstance(exp, list) or isinstance(exp, tuple):
             print(f'-- function call {exp}')

@@ -37,3 +37,39 @@ class EvaTest(unittest.TestCase):
         
                                  )
                               ''')), 10)
+
+    def test2(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(parse('''
+                                         (begin 
+                                            (var i 1)
+                                            (++ i)
+                                         )
+                                      ''')), 2)
+
+    def test3(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(parse('''
+                                            (begin 
+                                               (var i 1)
+                                               (-- i)
+                                            )
+                                         ''')), 0)
+
+    def test4(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(parse('''
+                                            (begin 
+                                               (var i 1)
+                                               (-= i 5)
+                                            )
+                                         ''')), -4)
+
+    def test5(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(parse('''
+                                            (begin 
+                                               (var i 1)
+                                               (+= i 5)
+                                            )
+                                         ''')), 6)

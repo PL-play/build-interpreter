@@ -43,3 +43,46 @@ class Transformer:
         _, init, condition, modifier, for_exp = exp
         while_exp = ['begin', init, ['while', condition, ['begin', for_exp, modifier]]]
         return while_exp
+
+    def trans_pp(self, exp):
+        """
+        (++ i)
+        (set i (+ i 1))
+
+        :param exp:
+        :return:
+        """
+        _, var_name = exp
+        return ['set', var_name, ['+', var_name, 1]]
+
+    def trans_mm(self, exp):
+        """
+        (-- i)
+        (set i (- i 1))
+
+        :param exp:
+        :return:
+        """
+        _, var_name = exp
+        return ['set', var_name, ['-', var_name, 1]]
+
+    def trans_pe(self, exp):
+        """
+        (+= i value)
+        (set i (+ i value))
+
+        :param exp:
+        :return:
+        """
+        _, var_name, value = exp
+        return ['set', var_name, ['+', var_name, value]]
+
+    def trans_me(self, exp):
+        """
+         (-= i value)
+         (set i (- i value))
+        :param exp:
+        :return:
+        """
+        _, var_name, value = exp
+        return ['set', var_name, ['-', var_name, value]]
