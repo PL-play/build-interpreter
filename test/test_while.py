@@ -6,9 +6,8 @@ from eva.Eva import Eva
 
 class EvaTest(unittest.TestCase):
     """
-    (if <condition>
-        <consequent>
-        <alternate>
+    (while <condition>
+        <block>
     )
     """
 
@@ -28,3 +27,20 @@ class EvaTest(unittest.TestCase):
              'result'
              ],
         ), 10)
+
+    def test2(self):
+        eva = Eva()
+        self.assertEqual(eva.eval(
+            ['begin',
+             ['var', 'result', 0],
+             ['var', 'i', 0],
+             ['while', ['<', 'i', 1],
+              ['begin',
+               ['set', 'result', ['+', 'result', 1]],
+               ['set', 'i', ['+', 'i', 1]],
+               ]
+              ],
+             'result'
+             ]
+
+        ), 1)

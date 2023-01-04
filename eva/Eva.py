@@ -41,6 +41,10 @@ class Eva:
                 result = self.eval(body, env)
             return result
 
+        if exp[0] == 'for':
+            while_exp = self._transformer.trans_for_to_while(exp)
+            return self.eval(while_exp, env)
+
         # variables declaration : (var foo 1)
         if exp[0] == 'var':
             _, name, value = exp

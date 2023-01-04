@@ -18,3 +18,28 @@ class Transformer:
             current[3] = next_block if next_cond == 'else' else ['if', None, None, None]
             current = current[3]
         return if_exp
+
+    def trans_for_to_while(self, exp):
+        """
+         for -> while
+
+        (for <init>
+            <condition>
+            <modifier>
+            <exp>)
+
+        (begin
+          <init>
+          while <condition>
+            (begin
+              <exp>
+              <modifier>
+            )
+        )
+        :param exp:
+        :return:
+        """
+
+        _, init, condition, modifier, for_exp = exp
+        while_exp = ['begin', init, ['while', condition, ['begin', for_exp, modifier]]]
+        return while_exp
