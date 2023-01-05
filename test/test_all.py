@@ -1,7 +1,7 @@
 import unittest
 
 from test import test_block, test_math, test_self_eval, test_variables, test_while, test_if_condition, test_parser, \
-    test_functions, test_lambda, test_syntactic_sugar, test_switch, test_class
+    test_functions, test_lambda, test_syntactic_sugar, test_switch, test_class, test_module
 
 if __name__ == '__main__':
     suite = unittest.TestSuite()
@@ -17,5 +17,6 @@ if __name__ == '__main__':
     suite.addTest(unittest.makeSuite(test_syntactic_sugar.EvaTest))
     suite.addTest(unittest.makeSuite(test_switch.EvaTest))
     suite.addTest(unittest.makeSuite(test_class.EvaTest))
+    suite.addTest(unittest.makeSuite(test_module.EvaTest))
     runner = unittest.TextTestRunner()
     runner.run(suite)

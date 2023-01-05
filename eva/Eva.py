@@ -127,6 +127,13 @@ class Eva:
             _, class_name = exp
             return self.eval(class_name, env).get_parent()
 
+        # module: (module <Name> <body>)
+        if exp[0] == 'module':
+            _, name, body = exp
+            module_env = Environment({}, env)
+            self._eval_body(body, module_env)
+            return env.define(name, module_env)
+
         if self.is_varname(exp):
             return env.lookup(exp)
 
