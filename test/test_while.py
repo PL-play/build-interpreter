@@ -1,6 +1,5 @@
 import unittest
 
-from eva.Environment import Environment
 from eva.Eva import Eva
 
 

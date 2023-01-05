@@ -22,9 +22,6 @@ class Eva:
         if self.is_string(exp):
             return exp[1:-1]
 
-        if self.is_varname(exp):
-            return env.lookup(exp)
-
         # if condition (if <condition> <consequent> <alternate>)
         if exp[0] == 'if':
             _, condition, consequent, alternate = exp
@@ -62,6 +59,7 @@ class Eva:
         # blocks
         if exp[0] == 'begin':
             block_env = Environment({}, env)
+            self.global_env = block_env
             return self._eval_block(exp, block_env)
 
         # function declaration: (def foo (x) (* x x))
@@ -115,6 +113,9 @@ class Eva:
             _, instance, name = exp
             instance_env = self.eval(instance, env)
             return instance_env.lookup(name)
+
+        if self.is_varname(exp):
+            return env.lookup(exp)
 
         if exp[0] == '++':
             pp_exp = self._transformer.trans_pp(exp)

@@ -27,3 +27,9 @@ class EvaTest(unittest.TestCase):
               ((prop p calc) p)
             )
         ''')), 30)
+        self.assertEqual(eva.eval(parse('''
+            (begin
+              (var p2 (new Point 45 24))
+              ((prop p2 calc) p2)
+            )
+        ''')), 69)
