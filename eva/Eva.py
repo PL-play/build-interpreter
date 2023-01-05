@@ -1,9 +1,11 @@
 import numbers
+import os
 import re
 import types
 
 from eva.Environment import Environment
 from eva.Transformer import Transformer
+from util.Parser import parse
 
 
 class Eva:
@@ -133,6 +135,15 @@ class Eva:
             module_env = Environment({}, env)
             self._eval_body(body, module_env)
             return env.define(name, module_env)
+
+        # import: (import <Name>)
+        if exp[0] == 'import':
+            _, name = exp
+            with open(f'{os.path.abspath(os.curdir)}/modules/{name}.eva', 'r') as f:
+                ff = f.read()
+            body = parse(f'(begin {ff} )')
+            module_exp = ['module', name, body]
+            return self.eval(module_exp, self.global_env)
 
         if self.is_varname(exp):
             return env.lookup(exp)
