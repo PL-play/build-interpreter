@@ -99,6 +99,7 @@ class Eva:
             parent_env = parent_env if parent_env else env
             class_env = Environment({}, parent_env)
             self._eval_body(body, class_env)
+            print(f'create class {name}')
             return env.define(name, class_env)
 
         # Class instantiation: (new <class> <arguments>)
@@ -117,6 +118,11 @@ class Eva:
             _, instance, name = exp
             instance_env = self.eval(instance, env)
             return instance_env.lookup(name)
+
+        # super: (super <ClassName>)
+        if exp[0] == 'super':
+            _, class_name = exp
+            return self.eval(class_name, env).get_parent()
 
         if self.is_varname(exp):
             return env.lookup(exp)

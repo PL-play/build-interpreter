@@ -23,13 +23,29 @@ class EvaTest(unittest.TestCase):
                   )
                 )
               )
-              (var p (new Point 10 20))
-              ((prop p calc) p)
+            (var p (new Point 10 20))
+            ((prop p calc) p)
             )
         ''')), 30)
+
         self.assertEqual(eva.eval(parse('''
-            (begin
-              (var p2 (new Point 45 24))
-              ((prop p2 calc) p2)
+            (block
+            (class Point3D Point
+                    (begin 
+                      (def constructor (this x y z)
+                        (begin
+                          ((prop (super Point3D) constructor) this x y)
+                          (set (prop this z) z)
+                        )
+                      )
+                      (def calc (this)
+                        (+ ((prop (super Point3D) calc) this)
+                           (prop this z) 
+                        )
+                      )
+                    )
+                  )
+              (var p (new Point3D 10 20 30))
+              ((prop p calc) p)
             )
-        ''')), 69)
+        ''')), 60)

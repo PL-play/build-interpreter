@@ -5,6 +5,9 @@ class Environment:
         self._record = record
         self._parent = parent
 
+    def get_parent(self):
+        return self._parent
+
     def define(self, name, value):
         self._record[name] = value
         return value
