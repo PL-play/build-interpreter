@@ -2,12 +2,12 @@ import unittest
 
 from eva.Eva import Eva
 from util.Parser import parse
-
+from util.Parser import parse
 
 class EvaTest(unittest.TestCase):
     def test3(self):
         eva = Eva()
-        self.assertEqual(eva.eval(('+', 1, 3)), 4)
+        self.assertEqual(eva.eval(['+', 1.3, 3]), 4.3)
 
     def test4(self):
         eva = Eva()
@@ -31,10 +31,10 @@ class EvaTest(unittest.TestCase):
 
     def test9(self):
         eva = Eva()
-        self.assertEqual(eva.eval(('/', 6, 2)), 3)
+        self.assertEqual(eva.eval(('/', 6, 2)), 3.0)
 
     def test10(self):
         eva = Eva()
         self.assertEqual(eva.eval(parse('''
-           (* 3 5) 
-        ''')), 15)
+           (* 3.5 5) 
+        ''')), 17.5)

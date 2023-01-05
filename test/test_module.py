@@ -32,3 +32,9 @@ class EvaTest(unittest.TestCase):
         self.assertEqual(eva.eval_global(parse('''
             (prop Math MAX_VALUE)
         ''')), 1000)
+        self.assertEqual(eva.eval_global(parse('''
+        (begin
+            (var abs (prop Math abs))
+            (abs (- 10))
+        )
+        ''')), 10)
