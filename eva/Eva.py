@@ -59,8 +59,11 @@ class Eva:
         # blocks
         if exp[0] == 'begin':
             block_env = Environment({}, env)
-            self.global_env = block_env
+            # self.global_env = block_env
             return self._eval_block(exp, block_env)
+            # blocks
+        if exp[0] == 'block':
+            return self._eval_block(exp, env)
 
         # function declaration: (def foo (x) (* x x))
         """
