@@ -11,6 +11,9 @@ class Eva:
         self.global_env = global_env
         self._transformer = Transformer()
 
+    def eval_global(self, exp):
+        return self._eval_body(exp, self.global_env)
+
     def eval(self, exp, env=None):
         print(f'start eval {exp}')
         if not env:
